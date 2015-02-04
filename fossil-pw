@@ -1,0 +1,15 @@
+#!/bin/sh
+
+#
+# Print the password for the given user
+# or the current user by default.
+#
+
+# Tested with dash (Debian Almquist shell).
+# http://www.in-ulm.de/~mascheck/various/ash/
+# http://en.wikipedia.org/wiki/Almquist_shell
+
+
+login=${1:-`whoami`}
+
+fossil sql "SELECT pw FROM user WHERE login = '$login'"
