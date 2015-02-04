@@ -1,0 +1,31 @@
+#!/bin/sh
+
+#
+# Print the name of the local open checkout's repository.
+#
+
+# Compatible with dash (Debian Almquist shell).
+# http://www.in-ulm.de/~mascheck/various/ash/
+# http://en.wikipedia.org/wiki/Almquist_shell
+
+
+found=
+curdir=`pwd`
+
+# Search for the closest open checkout.
+until test "$curdir" = "$HOME" -o "$curdir" = "/"; do
+  if test -f .fslckout; then
+    found="$curdir/.fslckout"
+    break
+  else
+    curdir=`dirname $curdir` # Look in parent directory.
+  fi
+done
+
+# Print the repository name.
+if test -n "$found"; then
+  sqlite3 "$found" "SELECT value FROM vvar WHERE name = 'repository'"
+else
+  echo "current directory is not within an open checkout" >&2
+  exit 1
+fi
